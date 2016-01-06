@@ -87,6 +87,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	int start1_word[4] = { START1_WORD0, START1_WORD1, START1_WORD2, START1_WORD3 };
 	int start1_anim_time[7] = { 0, 90, 180, 360, 400, 580, 800 };
 
+	int kud[4] = { KUD0, KUD1, KUD2, KUD3 };
+	int nob[4] = { NOB0, NOB1, NOB2, NOB3 };
+
 
 	switch (iMsg)
 	{
@@ -159,6 +162,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						}
 					}
 				}
+
+			if (clock() - start_anim_time >= 6200)
+				screen_mode = screen::ingame;
+			break;
+
+		case screen::ingame:
+			OnPaint(MemDC, EMPTY, 0, 0);
+			OnPaint(MemDC, kud[0], 0, 0);
+			OnPaint(MemDC, nob[0], 0, 0);
 			break;
 
 		}
