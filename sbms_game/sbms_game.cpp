@@ -11,12 +11,14 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode,choice;
+int screen_mode,choice,turn,player_input,score,nth=1,before_score,before_nth,is_start=0;
 clock_t start_anim_time;
 enum screen {title, choose, tutorial, start_anim, ingame, gameover};
 
 void OnPaint(HDC hdc, int ID, int x, int y);
 void OnPaintA(HDC hdc, int ID, int x, int y, double alpha);
+int logi2(int n);
+int isCorrect(int input, int score, int nth);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 
 
@@ -88,6 +90,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	int start1_anim_time[7] = { 0, 90, 180, 360, 400, 580, 800 };
 
 	int kud[4] = { KUD0, KUD1, KUD2, KUD3 };
+	int ingame_time[4] = { 0,50,150,200 };
 	int nob[4] = { NOB0, NOB1, NOB2, NOB3 };
 
 
@@ -147,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				}
 
 			for (int i = 0; i < 4; i++)
-				for (int j = 0; j < 7; j++)
+				for (int j = 0; j < 6; j++)
 				{
 					if (800 * i + start1_anim_time[j] <= clock() - start_anim_time-3000 && clock() - start_anim_time-3000 <= 800 * i + start1_anim_time[j + 1])
 					{
@@ -163,16 +166,115 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					}
 				}
 
-			if (clock() - start_anim_time >= 6200)
+			if (clock() - start_anim_time >= 0)//6200)
+			{
 				screen_mode = screen::ingame;
+				start_anim_time = clock();
+				turn = -1;
+			}
 			break;
 
 		case screen::ingame:
-			OnPaint(MemDC, EMPTY, 0, 0);
-			OnPaint(MemDC, kud[0], 0, 0);
-			OnPaint(MemDC, nob[0], 0, 0);
-			break;
+			if (turn == 0 || turn==-1)
+			{
+				if (clock()-start_anim_time >= 700)
+				{
+					screen_mode = screen::gameover;
+				}
+				else if (turn==-1 || clock()-start_anim_time>=200)
+				{
+					OnPaint(MemDC, EMPTY, 0, 0);
+					OnPaint(MemDC, kud[0], 0, 0);
+					OnPaint(MemDC, nob[0], 0, 0);
+				}
+				else if(0<=clock()-start_anim_time && clock()-start_anim_time <=200)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						if (ingame_time[i] <= clock() - start_anim_time && clock() - start_anim_time <= ingame_time[i + 1])
+						{
+							OnPaint(MemDC, EMPTY, 0, 0);
+							if (choice == 1)
+							{
+								OnPaint(MemDC, nob[0], 0, 0);
+								OnPaint(MemDC, kud[i + 1], 0, 0);
+								if (isCorrect(0, before_score, before_nth))
+									OnPaint(MemDC, ZERO_K, 0, 0);
+								else
+									OnPaint(MemDC, ONE_K, 0, 0);
+							}
+							else
+							{
+								OnPaint(MemDC, kud[0], 0, 0);
+								OnPaint(MemDC, nob[i + 1], 0, 0);
+								if (isCorrect(0, before_score, before_nth))
+									OnPaint(MemDC, ZERO_N, 0, 0);
+								else
+									OnPaint(MemDC, ONE_N, 0, 0);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if (0 <= clock() - start_anim_time && clock() - start_anim_time <= 200)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						if (ingame_time[i] <= clock() - start_anim_time && clock() - start_anim_time <= ingame_time[i + 1])
+						{
+							OnPaint(MemDC, EMPTY, 0, 0);
+							if (choice == 0)
+							{
+								OnPaint(MemDC, nob[0], 0, 0);
+								OnPaint(MemDC, kud[i + 1], 0, 0);
+								if (player_input==0)
+									OnPaint(MemDC, ZERO_K, 0, 0);
+								else
+									OnPaint(MemDC, ONE_K, 0, 0);
+							}
+							else
+							{
+								OnPaint(MemDC, kud[0], 0, 0);
+								OnPaint(MemDC, nob[i + 1], 0, 0);
+								if (player_input == 0)
+									OnPaint(MemDC, ZERO_N, 0, 0);
+								else
+									OnPaint(MemDC, ONE_N, 0, 0);
+							}
+						}
+					}
+				}
+				else if (200 <= clock()-start_anim_time && clock()-start_anim_time <=700)
+				{
+					OnPaint(MemDC, EMPTY, 0, 0);
+					OnPaint(MemDC, kud[0], 0, 0);
+					OnPaint(MemDC, nob[0], 0, 0);
+				}
+				else
+				{
+					OnPaint(MemDC, EMPTY, 0, 0);
+					OnPaint(MemDC, kud[0], 0, 0);
+					OnPaint(MemDC, nob[0], 0, 0);
 
+					start_anim_time = clock();
+					turn = 0;
+
+					before_nth = nth;
+					before_score = score;
+
+					nth++;
+					if (nth>1 + logi2(score))
+					{
+						score++;
+						nth = 1;
+					}
+				}
+			}
+			break;
+		case screen::gameover:
+			break;
 		}
 
 
@@ -235,6 +337,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				start_anim_time = clock();
 				screen_mode = screen::start_anim;
 				break;
+			case screen::gameover:
+				choice = 0;
+				screen_mode = title;
+				nth = before_nth = 1;
+				score = before_score = 0;
+				is_start = 0;
+
+				break;
 			}
 			break;
 		case 'Z':
@@ -250,6 +360,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				start_anim_time = clock();
 				screen_mode = screen::start_anim;
 				break;
+			case screen::gameover:
+				choice = 0;
+				screen_mode = title;
+				break;
 			}
 			break;
 		case 'X':
@@ -263,7 +377,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				choice = 0;
 				screen_mode = screen::title;
 				break;
+			case screen::gameover:
+				choice = 0;
+				screen_mode = title;
+				break;
 			}
+			break;
+		case '0':
+			switch (screen_mode)
+			{
+			case screen::ingame:
+				if (turn == 0 || turn==-1)
+				{
+					player_input = 0;
+					start_anim_time = clock();
+					turn = 1;
+
+					before_nth = nth;
+					before_score = score;
+
+					nth++;
+					if (nth>1 + logi2(score))
+					{
+						score++;
+						nth = 1;
+					}
+
+					if (isCorrect(0, before_score, before_nth) == 0)
+						screen_mode = screen::gameover;
+				}
+				break;
+			}
+			break;
+		case '1':
+			switch (screen_mode)
+			{
+			case screen::ingame:
+				if (turn == 0 || turn==-1)
+				{
+					player_input = 1;
+					start_anim_time = clock();
+					turn = 1;
+
+					before_nth = nth;
+					before_score = score;
+
+					nth++;
+					if (nth>1 + logi2(score))
+					{
+						score++;
+						nth = 1;
+					}
+					if (isCorrect(1, before_score, before_nth) == 0)
+						screen_mode = screen::gameover;
+				}
+				break;
+			}
+			break;
 		}
 		break;
 
@@ -338,4 +508,29 @@ void OnPaintA(HDC hdc, int ID, int x, int y, double alpha)
 
 	RectF destination(0, 0, I.GetWidth(), I.GetHeight());
 	G.DrawImage(&I, destination, x, y, I.GetWidth(), I.GetHeight(), UnitPixel, &ImgAttr);
+}
+
+
+int logi2(int n)
+{
+	int cnt = 0;
+	while (n>0)
+	{
+		n /= 2;
+		cnt++;
+	}
+	return cnt == 0 ? 0 : cnt - 1;
+}
+
+
+int isCorrect(int input, int score, int nth)
+{
+	int i;
+	int num = logi2(score) - nth + 1;
+	for (i = 0; i<num; i++)
+		score /= 2;
+	if (input == score % 2)
+		return 1;
+	else
+		return 0;
 }
