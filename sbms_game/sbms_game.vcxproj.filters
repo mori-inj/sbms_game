@@ -19,4 +19,136 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\resource\title\title_arrow_howto.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\title\title_arrow_start.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\title\title_wo_arrow.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\title\title0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\title\title1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\select\select.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\select\select_kudari.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\select\select_nobori.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\ani0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\ani1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\ani2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\ani3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\ani4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\word1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\word2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\word3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani0\word4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_ani0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_ani1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_ani2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_ani3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_ani4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_ani5.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_word0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_word1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_word2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\start_ani1\start_word3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\0K.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\0N.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\1K.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\1N.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\empty.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\kud0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\kud1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\kud2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\kud3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\nob0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\nob1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\nob2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\game\nob3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

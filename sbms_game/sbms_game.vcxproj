@@ -148,6 +148,54 @@
   <ItemGroup>
     <ClCompile Include="sbms_game.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\resource\game\0K.png" />
+    <Image Include="..\resource\game\0N.png" />
+    <Image Include="..\resource\game\1K.png" />
+    <Image Include="..\resource\game\1N.png" />
+    <Image Include="..\resource\game\empty.png" />
+    <Image Include="..\resource\game\kud0.png" />
+    <Image Include="..\resource\game\kud1.png" />
+    <Image Include="..\resource\game\kud2.png" />
+    <Image Include="..\resource\game\kud3.png" />
+    <Image Include="..\resource\game\nob0.png" />
+    <Image Include="..\resource\game\nob1.png" />
+    <Image Include="..\resource\game\nob2.png" />
+    <Image Include="..\resource\game\nob3.png" />
+    <Image Include="..\resource\select\select.png" />
+    <Image Include="..\resource\select\select_kudari.png" />
+    <Image Include="..\resource\select\select_nobori.png" />
+    <Image Include="..\resource\start_ani0\ani0.png" />
+    <Image Include="..\resource\start_ani0\ani1.png" />
+    <Image Include="..\resource\start_ani0\ani2.png" />
+    <Image Include="..\resource\start_ani0\ani3.png" />
+    <Image Include="..\resource\start_ani0\ani4.png" />
+    <Image Include="..\resource\start_ani0\word1.png" />
+    <Image Include="..\resource\start_ani0\word2.png" />
+    <Image Include="..\resource\start_ani0\word3.png" />
+    <Image Include="..\resource\start_ani0\word4.png" />
+    <Image Include="..\resource\start_ani1\start_ani0.png" />
+    <Image Include="..\resource\start_ani1\start_ani1.png" />
+    <Image Include="..\resource\start_ani1\start_ani2.png" />
+    <Image Include="..\resource\start_ani1\start_ani3.png" />
+    <Image Include="..\resource\start_ani1\start_ani4.png" />
+    <Image Include="..\resource\start_ani1\start_ani5.png" />
+    <Image Include="..\resource\start_ani1\start_word0.png" />
+    <Image Include="..\resource\start_ani1\start_word1.png" />
+    <Image Include="..\resource\start_ani1\start_word2.png" />
+    <Image Include="..\resource\start_ani1\start_word3.png" />
+    <Image Include="..\resource\title\title0.png" />
+    <Image Include="..\resource\title\title1.png" />
+    <Image Include="..\resource\title\title_arrow_howto.png" />
+    <Image Include="..\resource\title\title_arrow_start.png" />
+    <Image Include="..\resource\title\title_wo_arrow.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
