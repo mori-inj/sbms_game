@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <gdiplus.h>
+#include <time.h>
 #include "resource.h"
 using namespace Gdiplus;
 #pragma comment(lib, "gdiplus")
@@ -11,6 +12,7 @@ HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
 int screen_mode,choice;
+clock_t start_anim_time;
 enum screen {title, choose, tutorial, start_anim, ingame, gameover};
 
 void OnPaint(HDC hdc, int ID, int x, int y);
@@ -77,6 +79,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	HBITMAP hBit, OldBit;
 	RECT crt;
 
+	int start0_anim[5] = { START0_ANI0,START0_ANI1,START0_ANI2,START0_ANI3,START0_ANI4 };
+	int start0_word[4] = { START0_WORD0, START0_WORD1, START0_WORD2, START0_WORD3 };
+	int start0_anim_time[6] = { 0,350,450,550,650,750 };
+
+	int start1_anim[6] = { START1_ANI0,START1_ANI1,START1_ANI2,START1_ANI3,START1_ANI4,START1_ANI5 };
+	int start1_word[4] = { START1_WORD0, START1_WORD1, START1_WORD2, START1_WORD3 };
+	int start1_anim_time[7] = { 0, 90, 180, 360, 400, 580, 800 };
+
 
 	switch (iMsg)
 	{
@@ -114,6 +124,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				OnPaint(MemDC, SELECT_KUDA, 0, 0);
 			else
 				OnPaint(MemDC, SELECT_NOBO, 0, 0);
+			break;
+		case screen::start_anim:
+			for (int i = 0; i < 4; i++)
+				for (int j = 0; j < 5; j++)
+				{
+					if (750*i+start0_anim_time[j] <= clock()-start_anim_time && clock() - start_anim_time <= 750 * i + start0_anim_time[j+1])
+					{
+						OnPaint(MemDC, start0_anim[j], 0, 0);
+						if (j < 2 && i != 0)
+						{
+							OnPaint(MemDC, start0_word[i - 1], 0, 0);
+						}
+						else if (j >= 2)
+						{
+							OnPaint(MemDC, start0_word[i], 0, 0);
+						}
+					}
+				}
+
+			for (int i = 0; i < 4; i++)
+				for (int j = 0; j < 7; j++)
+				{
+					if (800 * i + start1_anim_time[j] <= clock() - start_anim_time-3000 && clock() - start_anim_time-3000 <= 800 * i + start1_anim_time[j + 1])
+					{
+						OnPaint(MemDC, start1_anim[j], 0, 0);
+						if (j < 2 && i != 0)
+						{
+							OnPaint(MemDC, start1_word[i - 1], 0, 0);
+						}
+						else if (j >= 2)
+						{
+							OnPaint(MemDC, start1_word[i], 0, 0);
+						}
+					}
+				}
 			break;
 
 		}
@@ -174,6 +219,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				else
 					screen_mode = screen::tutorial;
 				break;
+			case screen::choose:
+				start_anim_time = clock();
+				screen_mode = screen::start_anim;
+				break;
 			}
 			break;
 		case 'Z':
@@ -184,6 +233,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					screen_mode = screen::choose;
 				else
 					screen_mode = screen::tutorial;
+				break;
+			case screen::choose:
+				start_anim_time = clock();
+				screen_mode = screen::start_anim;
 				break;
 			}
 			break;
