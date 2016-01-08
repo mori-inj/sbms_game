@@ -187,13 +187,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case screen::ingame:
-			if (turn == 0 || turn==-1)
+			if (turn == 0)
 			{
 				if (clock()-start_anim_time >= time_limit)
 				{
 					screen_mode = screen::gameover;
 				}
-				else if (turn==-1 || clock()-start_anim_time>=200)
+				else if (clock()-start_anim_time>=200)
 				{
 					OnPaint(MemDC, EMPTY, 0, 0);
 					swprintf_s(score_t, L"%d",score);
@@ -234,7 +234,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				if (0 <= clock() - start_anim_time && clock() - start_anim_time <= 200)
+				if (turn!=-1 && 0 <= clock() - start_anim_time && clock() - start_anim_time <= 200)
 				{
 					for (int i = 0; i < 3; i++)
 					{
@@ -264,15 +264,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						}
 					}
 				}
-				else if (200 <= clock()-start_anim_time && clock()-start_anim_time <=time_limit)
-				{
-					OnPaint(MemDC, EMPTY, 0, 0);
-					swprintf_s(score_t, L"%d", score);
-					OnFont(MemDC, score_t, 64);
-					OnPaint(MemDC, kud[0], 0, 0);
-					OnPaint(MemDC, nob[0], 0, 0);
-				}
-				else
+				else if(clock() - start_anim_time >= time_limit)
 				{
 					OnPaint(MemDC, EMPTY, 0, 0);
 					swprintf_s(score_t, L"%d", score);
@@ -295,6 +287,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
 					if (score % 8 == 0 && time_limit > 300)
 						time_limit -= 100;
+				}
+				else //if (200 <= clock() - start_anim_time && clock() - start_anim_time <= time_limit)
+				{
+					OnPaint(MemDC, EMPTY, 0, 0);
+					swprintf_s(score_t, L"%d", score);
+					OnFont(MemDC, score_t, 64);
+					OnPaint(MemDC, kud[0], 0, 0);
+					OnPaint(MemDC, nob[0], 0, 0);
 				}
 			}
 			break;
@@ -395,7 +395,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				time_limit = 700;
 				break;
 			case screen::ingame:
-				if (turn == 0 || turn == -1)
+				if (turn == 0 )
 				{
 					player_input = 0;
 					start_anim_time = clock();
@@ -440,7 +440,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				time_limit = 700;
 				break;
 			case screen::ingame:
-				if (turn == 0 || turn == -1)
+				if (turn == 0 )
 				{
 					player_input = 1;
 					start_anim_time = clock();
@@ -469,7 +469,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			switch (screen_mode)
 			{
 			case screen::ingame:
-				if (turn == 0 || turn==-1)
+				if (turn == 0 )
 				{
 					player_input = 0;
 					start_anim_time = clock();
@@ -498,7 +498,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			switch (screen_mode)
 			{
 			case screen::ingame:
-				if (turn == 0 || turn==-1)
+				if (turn == 0 )
 				{
 					player_input = 1;
 					start_anim_time = clock();
