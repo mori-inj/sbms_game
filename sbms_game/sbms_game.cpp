@@ -456,8 +456,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						nth = 1;
 					}
 
-					if (score % 8 == 0 && time_limit > 300)
-						time_limit -= 100;
+					if (score % 8 == 0 && time_limit > 400)
+						time_limit -= 30;
 
 					if (isCorrect(1, before_score, before_nth) == 0)
 						screen_mode = screen::gameover;
@@ -536,8 +536,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 void OnFont(HDC hdc, WCHAR* input, int size)
 {
 	Graphics G(hdc);
-
-	Font F(L"서울한강체 M", size, FontStyleRegular, UnitPixel);
+	
+	Font F1(L"맑은 고딕", size, FontStyleRegular, UnitPixel);
+	Font F2(L"서울한강체 M", size, FontStyleRegular, UnitPixel);
+	
 	RectF R(408, 0, 400, size);
 	SolidBrush B(Color(0, 0, 0));
 	Pen P(Color(0, 0, 0));
@@ -546,7 +548,11 @@ void OnFont(HDC hdc, WCHAR* input, int size)
 	SF.SetAlignment(StringAlignmentNear);
 	SF.SetLineAlignment(StringAlignmentNear);
 	//G.DrawRectangle(&P, R);
-	G.DrawString(input, -1, &F, R, &SF, &B);
+	FontFamily FM(L"서울한강체 M");
+	if (!FM.IsAvailable())
+		G.DrawString(input, -1, &F1, R, &SF, &B);
+	else
+		G.DrawString(input, -1, &F2, R, &SF, &B);
 }
 
 void OnPaint(HDC hdc, int ID, int x, int y)
