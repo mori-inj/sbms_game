@@ -14,7 +14,7 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode,choice,turn,player_input,score,nth=1,before_score,before_nth,is_start=0,time_limit=700;
+int screen_mode,choice,turn,player_input,score,nth=1,before_score,before_nth,is_start=0,time_limit=800;
 clock_t start_anim_time;
 enum screen {title, choose, tutorial, start_anim, ingame, gameover};
 
@@ -285,8 +285,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						nth = 1;
 					}
 
-					if (score % 8 == 0 && time_limit > 300)
-						time_limit -= 100;
+					if (score % 8 == 0 && time_limit > 400)
+						time_limit -= 30;
 				}
 				else //if (200 <= clock() - start_anim_time && clock() - start_anim_time <= time_limit)
 				{
@@ -368,7 +368,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				nth = before_nth = 1;
 				score = before_score = 0;
 				is_start = 0;
-				time_limit = 700;
+				time_limit = 800;
 
 				break;
 			}
@@ -392,7 +392,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				nth = before_nth = 1;
 				score = before_score = 0;
 				is_start = 0;
-				time_limit = 700;
+				time_limit = 800;
 				break;
 			case screen::ingame:
 				if (turn == 0 )
@@ -411,8 +411,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						nth = 1;
 					}
 
-					if (score % 8 == 0 && time_limit > 300)
-						time_limit -= 100;
+					if (score % 8 == 0 && time_limit > 400)
+						time_limit -= 30;
 
 					if (isCorrect(0, before_score, before_nth) == 0)
 						screen_mode = screen::gameover;
@@ -437,7 +437,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				nth = before_nth = 1;
 				score = before_score = 0;
 				is_start = 0;
-				time_limit = 700;
+				time_limit = 800;
 				break;
 			case screen::ingame:
 				if (turn == 0 )
@@ -456,7 +456,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						nth = 1;
 					}
 
-					if (score % 8 == 0 && time_limit > 400)
+					if (score % 8 == 0 && time_limit > 400 && turn != 1)
 						time_limit -= 30;
 
 					if (isCorrect(1, before_score, before_nth) == 0)
@@ -485,8 +485,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						nth = 1;
 					}
 
-					if (score % 8 == 0 && time_limit > 300)
-						time_limit -= 100;
+					if (score % 8 == 0 && time_limit > 400 && turn != 1)
+						time_limit -= 30;
 
 					if (isCorrect(0, before_score, before_nth) == 0)
 						screen_mode = screen::gameover;
@@ -514,8 +514,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						nth = 1;
 					}
 
-					if (score % 8 == 0 && time_limit > 300)
-						time_limit -= 100;
+					if (score % 8 == 0 && time_limit > 400)
+						time_limit -= 30;
 
 					if (isCorrect(1, before_score, before_nth) == 0)
 						screen_mode = screen::gameover;
