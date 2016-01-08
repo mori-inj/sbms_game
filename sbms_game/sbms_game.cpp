@@ -1,7 +1,7 @@
-#include <windows.h>
+#include <Windows.h>
 #include <gdiplus.h>
 #include <time.h>
-#include <string>
+#include <tchar.h>
 #include "resource.h"
 
 using namespace std;
@@ -52,11 +52,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	WndClass.lpszMenuName = NULL;
-	WndClass.lpszClassName = L"Window Class Name";
+	WndClass.lpszClassName = L"SBMS_GAME";
 	RegisterClass(&WndClass);
 	hWnd = CreateWindow(
-		L"Window Class Name",
-		L"Window Title Name",
+		L"SBMS_GAME",
+		L"SBMS_GAME",
 		WS_OVERLAPPEDWINDOW,
 		GetSystemMetrics(SM_CXFULLSCREEN)/2-408,
 		GetSystemMetrics(SM_CYFULLSCREEN)/2-319,
@@ -178,7 +178,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					}
 				}
 
-			if (clock() - start_anim_time >= 0)//6200)
+			if (clock() - start_anim_time >= 6200)
 			{
 				screen_mode = screen::ingame;
 				start_anim_time = clock();
@@ -394,6 +394,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				is_start = 0;
 				time_limit = 700;
 				break;
+			case screen::ingame:
+				if (turn == 0 || turn == -1)
+				{
+					player_input = 0;
+					start_anim_time = clock();
+					turn = 1;
+
+					before_nth = nth;
+					before_score = score;
+
+					nth++;
+					if (nth>1 + logi2(score))
+					{
+						score++;
+						nth = 1;
+					}
+
+					if (score % 8 == 0 && time_limit > 300)
+						time_limit -= 100;
+
+					if (isCorrect(0, before_score, before_nth) == 0)
+						screen_mode = screen::gameover;
+				}
+				break;
 			}
 			break;
 		case 'X':
@@ -414,6 +438,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				score = before_score = 0;
 				is_start = 0;
 				time_limit = 700;
+				break;
+			case screen::ingame:
+				if (turn == 0 || turn == -1)
+				{
+					player_input = 1;
+					start_anim_time = clock();
+					turn = 1;
+
+					before_nth = nth;
+					before_score = score;
+
+					nth++;
+					if (nth>1 + logi2(score))
+					{
+						score++;
+						nth = 1;
+					}
+
+					if (score % 8 == 0 && time_limit > 300)
+						time_limit -= 100;
+
+					if (isCorrect(1, before_score, before_nth) == 0)
+						screen_mode = screen::gameover;
+				}
 				break;
 			}
 			break;
