@@ -14,7 +14,7 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode,choice,turn,player_input,score=1,nth=1,before_score,before_nth,is_start=0,time_limit=800,retry=0;
+int screen_mode,choice,turn,player_input,score=1,nth=1,before_score,before_nth,is_start=0,time_limit=800,retry=0,wrong_flag=0;
 clock_t start_anim_time;
 enum screen {title, choose, tutorial, start_anim, ingame, gameover};
 
@@ -190,6 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				is_start = 0;
 				time_limit = 800;
 				retry = 0;
+				wrong_flag = 0;
 			}
 			break;
 
@@ -257,7 +258,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							{
 								OnPaint(MemDC, nob[0], 0, 0);
 								OnPaint(MemDC, kud[i + 1], 0, 0);
-								if (player_input==0)
+								if (player_input == 0)
 									OnPaint(MemDC, ZERO_K, 0, 0);
 								else
 									OnPaint(MemDC, ONE_K, 0, 0);
@@ -273,30 +274,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							}
 						}
 					}
-				}
-				else if(clock() - start_anim_time >= time_limit)
-				{
-					OnPaint(MemDC, EMPTY, 0, 0);
-					swprintf_s(score_t, L"%d", score);
-					OnFont(MemDC, score_t, 64);
-					OnPaint(MemDC, kud[0], 0, 0);
-					OnPaint(MemDC, nob[0], 0, 0);
-
-					start_anim_time = clock();
-					turn = 0;
-
-					before_nth = nth;
-					before_score = score;
-
-					nth++;
-					if (nth>1 + logi2(score))
+					if (wrong_flag == 1)
 					{
-						score++;
-						nth = 1;
+						if (choice == 0)
+							OnPaint(MemDC, WRONG_K, 0, 0);
+						else
+							OnPaint(MemDC, WRONG_N, 0, 0);
 					}
+				}
+				else if (clock() - start_anim_time >= time_limit)
+				{
+					if (wrong_flag == 1)
+					{
+						screen_mode = screen::gameover;
+						start_anim_time = clock();
+					}
+					else
+					{
+						OnPaint(MemDC, EMPTY, 0, 0);
+						swprintf_s(score_t, L"%d", score);
+						OnFont(MemDC, score_t, 64);
+						OnPaint(MemDC, kud[0], 0, 0);
+						OnPaint(MemDC, nob[0], 0, 0);
 
-					if (score % 8 == 0 && time_limit > 400)
-						time_limit -= 30;
+						start_anim_time = clock();
+						turn = 0;
+
+						before_nth = nth;
+						before_score = score;
+
+						nth++;
+						if (nth > 1 + logi2(score))
+						{
+							score++;
+							nth = 1;
+						}
+
+						if (score % 8 == 0 && time_limit > 400)
+							time_limit -= 30;
+					}
 				}
 				else //if (200 <= clock() - start_anim_time && clock() - start_anim_time <= time_limit)
 				{
@@ -305,6 +321,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					OnFont(MemDC, score_t, 64);
 					OnPaint(MemDC, kud[0], 0, 0);
 					OnPaint(MemDC, nob[0], 0, 0);
+
+					if (wrong_flag == 1)
+					{
+						if (choice == 0)
+							OnPaint(MemDC, WRONG_K, 0, 0);
+						else
+							OnPaint(MemDC, WRONG_N, 0, 0);
+					}
 				}
 			}
 			break;
@@ -314,9 +338,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				OnPaint(MemDC, GAMEOVER_K_BG, 0, 0);
 				swprintf_s(score_t, L"%d", score);
 				OnFontA(MemDC, score_t, 72);
-				if(clock()-start_anim_time <= 300)
+				if(clock()-start_anim_time <= 400)
 					OnPaint(MemDC, GAMEOVER_K_0, 0, 0);
-				else if(clock()-start_anim_time <= 400)
+				else if(clock()-start_anim_time <= 500)
 					OnPaint(MemDC, GAMEOVER_K_1, 0, 0);
 				else
 					OnPaint(MemDC, GAMEOVER_K_2, 0, 0);
@@ -326,9 +350,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				OnPaint(MemDC, GAMEOVER_N_BG, 0, 0);
 				swprintf_s(score_t, L"%d", score);
 				OnFontA(MemDC, score_t, 72);
-				if (clock() - start_anim_time <= 300)
+				if (clock() - start_anim_time <= 400)
 					OnPaint(MemDC, GAMEOVER_N_0, 0, 0);
-				else if (clock() - start_anim_time <= 400)
+				else if (clock() - start_anim_time <= 500)
 					OnPaint(MemDC, GAMEOVER_N_1, 0, 0);
 				else
 					OnPaint(MemDC, GAMEOVER_N_2, 0, 0);
@@ -656,19 +680,22 @@ void get_input(int x)
 	before_nth = nth;
 	before_score = score;
 
-	nth++;
-	if (nth>1 + logi2(score))
-	{
-		score++;
-		nth = 1;
-	}
-
-	if (score % 8 == 0 && time_limit > 400)
-		time_limit -= 30;
+	
 
 	if (isCorrect(x, before_score, before_nth) == 0)
 	{
-		screen_mode = screen::gameover;
-		start_anim_time = clock();
+		wrong_flag = 1;
+	}
+	else
+	{
+		nth++;
+		if (nth>1 + logi2(score))
+		{
+			score++;
+			nth = 1;
+		}
+
+		if (score % 8 == 0 && time_limit > 400)
+			time_limit -= 30;
 	}
 }
