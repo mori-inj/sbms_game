@@ -257,7 +257,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							if (choice == 0)
 							{
 								if (wrong_flag == 1)
-									OnPaint(MemDC, WRONG_K, 0, 0);
+									OnPaint(MemDC, WRONG_K_m, 0, 0);
 								else
 									OnPaint(MemDC, nob[0], 0, 0);
 								OnPaint(MemDC, kud[i + 1], 0, 0);
@@ -270,7 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							else
 							{
 								if (wrong_flag == 1)
-									OnPaint(MemDC, WRONG_N, 0, 0);
+									OnPaint(MemDC, WRONG_N_m, 0, 0);
 								else
 									OnPaint(MemDC, kud[0], 0, 0);
 								OnPaint(MemDC, nob[i + 1], 0, 0);
@@ -325,12 +325,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					{
 						if (choice == 0)
 						{
-							OnPaint(MemDC, WRONG_K, 0, 0);
+							OnPaint(MemDC, WRONG_K_m, 0, 0);
 							OnPaint(MemDC, kud[0], 0, 0);
 						}
 						else
 						{
-							OnPaint(MemDC, WRONG_N, 0, 0);
+							OnPaint(MemDC, WRONG_N_m, 0, 0);
 							OnPaint(MemDC, nob[0], 0, 0);
 						}
 					}
