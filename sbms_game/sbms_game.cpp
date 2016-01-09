@@ -14,9 +14,9 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode,choice,turn,player_input,score=1,nth=1,before_score,before_nth,is_start=0,time_limit=800,retry=0,wrong_flag=0;
+int screen_mode, choice, turn, player_input, score = 1, nth = 1, before_score, before_nth, is_start = 0, time_limit = 800, retry = 0, wrong_flag = 0;
 clock_t start_anim_time;
-enum screen {title, choose, tutorial, start_anim, ingame, gameover};
+enum screen { title, choose, tutorial, start_anim, ingame, gameover };
 
 void OnFont(HDC hdc, WCHAR* input, int size);
 void OnFontA(HDC hdc, WCHAR* input, int size);
@@ -38,9 +38,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	ULONG_PTR gpToken;
 	GdiplusStartupInput gpsi;
-	if (GdiplusStartup(&gpToken, &gpsi, NULL) != Ok) 
+	if (GdiplusStartup(&gpToken, &gpsi, NULL) != Ok)
 	{
-		MessageBox(NULL, TEXT("GDI+ 라이브러리를 초기화할 수 없습니다."),TEXT("알림"), MB_OK);
+		MessageBox(NULL, TEXT("GDI+ 라이브러리를 초기화할 수 없습니다."), TEXT("알림"), MB_OK);
 		return 0;
 	}
 
@@ -60,8 +60,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 		L"SBMS_GAME",
 		L"SBMS_GAME",
 		WS_OVERLAPPEDWINDOW,
-		GetSystemMetrics(SM_CXFULLSCREEN)/2-408,
-		GetSystemMetrics(SM_CYFULLSCREEN)/2-319,
+		GetSystemMetrics(SM_CXFULLSCREEN) / 2 - 408,
+		GetSystemMetrics(SM_CYFULLSCREEN) / 2 - 319,
 		816,
 		638,
 		NULL,
@@ -125,13 +125,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
 		MemDC = CreateCompatibleDC(hdc);
 		hBit = CreateCompatibleBitmap(hdc, crt.right, crt.bottom);
-		OldBit = (HBITMAP)SelectObject(MemDC, hBit);	
+		OldBit = (HBITMAP)SelectObject(MemDC, hBit);
 		SetBkColor(MemDC, RGB(255, 255, 255));
 
 		switch (screen_mode)
 		{
 		case screen::title:
-			if (choice==0)
+			if (choice == 0)
 				OnPaint(MemDC, TITLE0, 0, 0);
 			else
 				OnPaint(MemDC, TITLE1, 0, 0);
@@ -140,7 +140,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			OnPaint(MemDC, TUTORIAL, 0, 0);
 			break;
 		case screen::choose:
-			if(choice==0)
+			if (choice == 0)
 				OnPaint(MemDC, SELECT_KUDA, 0, 0);
 			else
 				OnPaint(MemDC, SELECT_NOBO, 0, 0);
@@ -149,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			for (int i = 0; i < 4; i++)
 				for (int j = 0; j < 5; j++)
 				{
-					if (750*i+start0_anim_time[j] <= clock()-start_anim_time && clock() - start_anim_time <= 750 * i + start0_anim_time[j+1])
+					if (750 * i + start0_anim_time[j] <= clock() - start_anim_time && clock() - start_anim_time <= 750 * i + start0_anim_time[j + 1])
 					{
 						OnPaint(MemDC, start0_anim[j], 0, 0);
 						if (j < 2 && i != 0)
@@ -166,7 +166,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			for (int i = 0; i < 4; i++)
 				for (int j = 0; j < 6; j++)
 				{
-					if (800 * i + start1_anim_time[j] <= clock() - start_anim_time-3000 && clock() - start_anim_time-3000 <= 800 * i + start1_anim_time[j + 1])
+					if (800 * i + start1_anim_time[j] <= clock() - start_anim_time - 3000 && clock() - start_anim_time - 3000 <= 800 * i + start1_anim_time[j + 1])
 					{
 						OnPaint(MemDC, start1_anim[j], 0, 0);
 						if (j < 2 && i != 0)
@@ -195,28 +195,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case screen::ingame:
-			if (turn == 0  || turn==-1)
+			if (turn == 0 || turn == -1)
 			{
-				if (clock()-start_anim_time >= time_limit)
+				if (clock() - start_anim_time >= time_limit)
 				{
 					screen_mode = screen::gameover;
 				}
-				else if (clock()-start_anim_time>=200)
+				else if (clock() - start_anim_time >= 200)
 				{
 					OnPaint(MemDC, EMPTY, 0, 0);
-					swprintf_s(score_t, L"%d",score);
+					swprintf_s(score_t, L"%d", score);
 					OnFont(MemDC, score_t, 64);
 					OnPaint(MemDC, kud[0], 0, 0);
 					OnPaint(MemDC, nob[0], 0, 0);
 				}
-				else if(0<=clock()-start_anim_time && clock()-start_anim_time <=200)
+				else if (0 <= clock() - start_anim_time && clock() - start_anim_time <= 200)
 				{
 					for (int i = 0; i < 3; i++)
 					{
 						if (ingame_time[i] <= clock() - start_anim_time && clock() - start_anim_time <= ingame_time[i + 1])
 						{
 							OnPaint(MemDC, EMPTY, 0, 0);
-							if(turn==-1)
+							if (turn == -1)
 								swprintf_s(score_t, L"%d", 0);
 							else
 								swprintf_s(score_t, L"%d", score);
@@ -256,8 +256,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							OnFont(MemDC, score_t, 64);
 							if (choice == 0)
 							{
-								OnPaint(MemDC, nob[0], 0, 0);
+								if (wrong_flag == 1)
+									OnPaint(MemDC, WRONG_K, 0, 0);
+								else
+									OnPaint(MemDC, nob[0], 0, 0);
 								OnPaint(MemDC, kud[i + 1], 0, 0);
+
 								if (player_input == 0)
 									OnPaint(MemDC, ZERO_K, 0, 0);
 								else
@@ -265,21 +269,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							}
 							else
 							{
-								OnPaint(MemDC, kud[0], 0, 0);
+								if (wrong_flag == 1)
+									OnPaint(MemDC, WRONG_N, 0, 0);
+								else
+									OnPaint(MemDC, kud[0], 0, 0);
 								OnPaint(MemDC, nob[i + 1], 0, 0);
+
 								if (player_input == 0)
 									OnPaint(MemDC, ZERO_N, 0, 0);
 								else
 									OnPaint(MemDC, ONE_N, 0, 0);
 							}
 						}
-					}
-					if (wrong_flag == 1)
-					{
-						if (choice == 0)
-							OnPaint(MemDC, WRONG_K, 0, 0);
-						else
-							OnPaint(MemDC, WRONG_N, 0, 0);
 					}
 				}
 				else if (clock() - start_anim_time >= time_limit)
@@ -319,15 +320,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					OnPaint(MemDC, EMPTY, 0, 0);
 					swprintf_s(score_t, L"%d", score);
 					OnFont(MemDC, score_t, 64);
-					OnPaint(MemDC, kud[0], 0, 0);
-					OnPaint(MemDC, nob[0], 0, 0);
 
 					if (wrong_flag == 1)
 					{
 						if (choice == 0)
+						{
 							OnPaint(MemDC, WRONG_K, 0, 0);
+							OnPaint(MemDC, kud[0], 0, 0);
+						}
 						else
+						{
 							OnPaint(MemDC, WRONG_N, 0, 0);
+							OnPaint(MemDC, nob[0], 0, 0);
+						}
+					}
+					else
+					{
+						OnPaint(MemDC, kud[0], 0, 0);
+						OnPaint(MemDC, nob[0], 0, 0);
 					}
 				}
 			}
@@ -338,9 +348,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				OnPaint(MemDC, GAMEOVER_K_BG, 0, 0);
 				swprintf_s(score_t, L"%d", score);
 				OnFontA(MemDC, score_t, 72);
-				if(clock()-start_anim_time <= 400)
+				if (clock() - start_anim_time <= 400)
 					OnPaint(MemDC, GAMEOVER_K_0, 0, 0);
-				else if(clock()-start_anim_time <= 500)
+				else if (clock() - start_anim_time <= 500)
 					OnPaint(MemDC, GAMEOVER_K_1, 0, 0);
 				else
 					OnPaint(MemDC, GAMEOVER_K_2, 0, 0);
@@ -357,7 +367,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				else
 					OnPaint(MemDC, GAMEOVER_N_2, 0, 0);
 			}
-			if(retry==0)
+			if (retry == 0)
 				OnPaint(MemDC, GAMEOVER_ARROW_RETRY, 0, 0);
 			else
 				OnPaint(MemDC, GAMEOVER_ARROW_STOP, 0, 0);
@@ -462,7 +472,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					screen_mode = screen::title;
 				break;
 			case screen::ingame:
-				if (turn == 0 || turn ==-1)
+				if (turn == 0 || turn == -1)
 					get_input(0);
 				break;
 			}
@@ -478,7 +488,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				choice = 0;
 				screen_mode = screen::title;
 				break;
-			/*case screen::gameover:
+				/*case screen::gameover:
 				choice = 0;
 				screen_mode = screen::title;
 				break;*/
@@ -539,10 +549,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 void OnFont(HDC hdc, WCHAR* input, int size)
 {
 	Graphics G(hdc);
-	
+
 	Font F1(L"맑은 고딕", size, FontStyleRegular, UnitPixel);
 	Font F2(L"서울한강체 M", size, FontStyleRegular, UnitPixel);
-	
+
 	RectF R(408, 0, 400, size);
 	SolidBrush B(Color(0, 0, 0));
 	Pen P(Color(0, 0, 0));
@@ -624,7 +634,7 @@ void OnPaintA(HDC hdc, int ID, int x, int y, double alpha)
 	};
 
 	ImageAttributes ImgAttr;
-	ImgAttr.SetColorMatrix(&ClrMatrix, ColorMatrixFlagsDefault,ColorAdjustTypeBitmap);
+	ImgAttr.SetColorMatrix(&ClrMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
 
 	DWORD imageSize = SizeofResource(g_hInst, hResource);
 	HGLOBAL hGlobal = LoadResource(g_hInst, hResource);
@@ -680,7 +690,7 @@ void get_input(int x)
 	before_nth = nth;
 	before_score = score;
 
-	
+
 
 	if (isCorrect(x, before_score, before_nth) == 0)
 	{
