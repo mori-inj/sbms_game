@@ -14,7 +14,7 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode,choice,turn,player_input,score,nth=1,before_score,before_nth,is_start=0,time_limit=800;
+int screen_mode,choice,turn,player_input,score=1,nth=1,before_score,before_nth,is_start=0,time_limit=800;
 clock_t start_anim_time;
 enum screen {title, choose, tutorial, start_anim, ingame, gameover};
 
@@ -23,6 +23,7 @@ void OnPaint(HDC hdc, int ID, int x, int y);
 void OnPaintA(HDC hdc, int ID, int x, int y, double alpha);
 int logi2(int n);
 int isCorrect(int input, int score, int nth);
+void get_input(int x);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 
 
@@ -183,11 +184,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				screen_mode = screen::ingame;
 				start_anim_time = clock();
 				turn = -1;
+				nth = before_nth = 1;
+				score = before_score = 1;
+				is_start = 0;
+				time_limit = 800;
 			}
 			break;
 
 		case screen::ingame:
-			if (turn == 0)
+			if (turn == 0  || turn==-1)
 			{
 				if (clock()-start_anim_time >= time_limit)
 				{
@@ -214,7 +219,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							{
 								OnPaint(MemDC, nob[0], 0, 0);
 								OnPaint(MemDC, kud[i + 1], 0, 0);
-								if (isCorrect(0, before_score, before_nth))
+								if (isCorrect(0, before_score, before_nth) || turn == -1)
 									OnPaint(MemDC, ZERO_K, 0, 0);
 								else
 									OnPaint(MemDC, ONE_K, 0, 0);
@@ -223,7 +228,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 							{
 								OnPaint(MemDC, kud[0], 0, 0);
 								OnPaint(MemDC, nob[i + 1], 0, 0);
-								if (isCorrect(0, before_score, before_nth))
+								if (isCorrect(0, before_score, before_nth) || turn == -1)
 									OnPaint(MemDC, ZERO_N, 0, 0);
 								else
 									OnPaint(MemDC, ONE_N, 0, 0);
@@ -234,7 +239,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				if (turn!=-1 && 0 <= clock() - start_anim_time && clock() - start_anim_time <= 200)
+				if (0 <= clock() - start_anim_time && clock() - start_anim_time <= 200)
 				{
 					for (int i = 0; i < 3; i++)
 					{
@@ -364,12 +369,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			case screen::gameover:
 				choice = 0;
-				screen_mode = title;
-				nth = before_nth = 1;
-				score = before_score = 0;
-				is_start = 0;
-				time_limit = 800;
-
+				screen_mode = screen::title;
 				break;
 			}
 			break;
@@ -388,35 +388,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			case screen::gameover:
 				choice = 0;
-				screen_mode = title;
-				nth = before_nth = 1;
-				score = before_score = 0;
-				is_start = 0;
-				time_limit = 800;
+				screen_mode = screen::title;
 				break;
 			case screen::ingame:
-				if (turn == 0 )
-				{
-					player_input = 0;
-					start_anim_time = clock();
-					turn = 1;
-
-					before_nth = nth;
-					before_score = score;
-
-					nth++;
-					if (nth>1 + logi2(score))
-					{
-						score++;
-						nth = 1;
-					}
-
-					if (score % 8 == 0 && time_limit > 400)
-						time_limit -= 30;
-
-					if (isCorrect(0, before_score, before_nth) == 0)
-						screen_mode = screen::gameover;
-				}
+				if (turn == 0 || turn ==-1)
+					get_input(0);
 				break;
 			}
 			break;
@@ -433,35 +409,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			case screen::gameover:
 				choice = 0;
-				screen_mode = title;
-				nth = before_nth = 1;
-				score = before_score = 0;
-				is_start = 0;
-				time_limit = 800;
+				screen_mode = screen::title;
 				break;
 			case screen::ingame:
-				if (turn == 0 )
-				{
-					player_input = 1;
-					start_anim_time = clock();
-					turn = 1;
-
-					before_nth = nth;
-					before_score = score;
-
-					nth++;
-					if (nth>1 + logi2(score))
-					{
-						score++;
-						nth = 1;
-					}
-
-					if (score % 8 == 0 && time_limit > 400 && turn != 1)
-						time_limit -= 30;
-
-					if (isCorrect(1, before_score, before_nth) == 0)
-						screen_mode = screen::gameover;
-				}
+				if (turn == 0 || turn == -1)
+					get_input(1);
 				break;
 			}
 			break;
@@ -469,28 +421,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			switch (screen_mode)
 			{
 			case screen::ingame:
-				if (turn == 0 )
-				{
-					player_input = 0;
-					start_anim_time = clock();
-					turn = 1;
-
-					before_nth = nth;
-					before_score = score;
-
-					nth++;
-					if (nth>1 + logi2(score))
-					{
-						score++;
-						nth = 1;
-					}
-
-					if (score % 8 == 0 && time_limit > 400 && turn != 1)
-						time_limit -= 30;
-
-					if (isCorrect(0, before_score, before_nth) == 0)
-						screen_mode = screen::gameover;
-				}
+				if (turn == 0 || turn == -1)
+					get_input(0);
 				break;
 			}
 			break;
@@ -498,28 +430,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			switch (screen_mode)
 			{
 			case screen::ingame:
-				if (turn == 0 )
-				{
-					player_input = 1;
-					start_anim_time = clock();
-					turn = 1;
-
-					before_nth = nth;
-					before_score = score;
-
-					nth++;
-					if (nth>1 + logi2(score))
-					{
-						score++;
-						nth = 1;
-					}
-
-					if (score % 8 == 0 && time_limit > 400)
-						time_limit -= 30;
-
-					if (isCorrect(1, before_score, before_nth) == 0)
-						screen_mode = screen::gameover;
-				}
+				if (turn == 0 || turn == -1)
+					get_input(1);
 				break;
 			}
 			break;
@@ -644,4 +556,27 @@ int isCorrect(int input, int score, int nth)
 		return 1;
 	else
 		return 0;
+}
+
+void get_input(int x)
+{
+	player_input = x;
+	start_anim_time = clock();
+	turn = 1;
+
+	before_nth = nth;
+	before_score = score;
+
+	nth++;
+	if (nth>1 + logi2(score))
+	{
+		score++;
+		nth = 1;
+	}
+
+	if (score % 8 == 0 && time_limit > 400)
+		time_limit -= 30;
+
+	if (isCorrect(x, before_score, before_nth) == 0)
+		screen_mode = screen::gameover;
 }

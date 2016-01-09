@@ -228,6 +228,7 @@
     <Image Include="..\resource\title\title_arrow_howto.png" />
     <Image Include="..\resource\title\title_arrow_start.png" />
     <Image Include="..\resource\title\title_wo_arrow.png" />
+    <Image Include="..\resource\tutorial\tutorial.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
