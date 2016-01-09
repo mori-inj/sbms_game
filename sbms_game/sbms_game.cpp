@@ -136,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				OnPaint(MemDC, TITLE1, 0, 0);
 			break;
 		case screen::tutorial:
-			OnPaintA(MemDC, TITLE1, 0, 0, 0.7);
+			OnPaint(MemDC, TUTORIAL, 0, 0);
 			break;
 		case screen::choose:
 			if(choice==0)
