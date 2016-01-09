@@ -14,11 +14,12 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode,choice,turn,player_input,score=1,nth=1,before_score,before_nth,is_start=0,time_limit=800;
+int screen_mode,choice,turn,player_input,score=1,nth=1,before_score,before_nth,is_start=0,time_limit=800,retry=0;
 clock_t start_anim_time;
 enum screen {title, choose, tutorial, start_anim, ingame, gameover};
 
 void OnFont(HDC hdc, WCHAR* input, int size);
+void OnFontA(HDC hdc, WCHAR* input, int size);
 void OnPaint(HDC hdc, int ID, int x, int y);
 void OnPaintA(HDC hdc, int ID, int x, int y, double alpha);
 int logi2(int n);
@@ -188,6 +189,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				score = before_score = 1;
 				is_start = 0;
 				time_limit = 800;
+				retry = 0;
 			}
 			break;
 
@@ -213,7 +215,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						if (ingame_time[i] <= clock() - start_anim_time && clock() - start_anim_time <= ingame_time[i + 1])
 						{
 							OnPaint(MemDC, EMPTY, 0, 0);
-							swprintf_s(score_t, L"%d", score);
+							if(turn==-1)
+								swprintf_s(score_t, L"%d", 0);
+							else
+								swprintf_s(score_t, L"%d", score);
 							OnFont(MemDC, score_t, 64);
 							if (choice == 1)
 							{
@@ -304,6 +309,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case screen::gameover:
+			if (choice == 0)
+			{
+				OnPaint(MemDC, GAMEOVER_K_BG, 0, 0);
+				swprintf_s(score_t, L"%d", score);
+				OnFontA(MemDC, score_t, 72);
+				if(clock()-start_anim_time <= 300)
+					OnPaint(MemDC, GAMEOVER_K_0, 0, 0);
+				else if(clock()-start_anim_time <= 400)
+					OnPaint(MemDC, GAMEOVER_K_1, 0, 0);
+				else
+					OnPaint(MemDC, GAMEOVER_K_2, 0, 0);
+			}
+			else
+			{
+				OnPaint(MemDC, GAMEOVER_N_BG, 0, 0);
+				swprintf_s(score_t, L"%d", score);
+				OnFontA(MemDC, score_t, 72);
+				if (clock() - start_anim_time <= 300)
+					OnPaint(MemDC, GAMEOVER_N_0, 0, 0);
+				else if (clock() - start_anim_time <= 400)
+					OnPaint(MemDC, GAMEOVER_N_1, 0, 0);
+				else
+					OnPaint(MemDC, GAMEOVER_N_2, 0, 0);
+			}
+			if(retry==0)
+				OnPaint(MemDC, GAMEOVER_ARROW_RETRY, 0, 0);
+			else
+				OnPaint(MemDC, GAMEOVER_ARROW_STOP, 0, 0);
 			break;
 		}
 
@@ -343,6 +376,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				if (choice == 1)
 					choice = 0;
 				break;
+			case screen::gameover:
+				if (retry == 1)
+					retry = 0;
+				break;
 			}
 			break;
 		case VK_RIGHT:
@@ -351,6 +388,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			case screen::choose:
 				if (choice == 0)
 					choice = 1;
+				break;
+			case screen::gameover:
+				if (retry == 0)
+					retry = 1;
 				break;
 			}
 			break;
@@ -369,7 +410,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			case screen::gameover:
 				choice = 0;
-				screen_mode = screen::title;
+				if (retry == 0)
+					screen_mode = screen::choose;
+				else
+					screen_mode = screen::title;
 				break;
 			}
 			break;
@@ -388,7 +432,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			case screen::gameover:
 				choice = 0;
-				screen_mode = screen::title;
+				if (retry == 0)
+					screen_mode = screen::choose;
+				else
+					screen_mode = screen::title;
 				break;
 			case screen::ingame:
 				if (turn == 0 || turn ==-1)
@@ -407,10 +454,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				choice = 0;
 				screen_mode = screen::title;
 				break;
-			case screen::gameover:
+			/*case screen::gameover:
 				choice = 0;
 				screen_mode = screen::title;
-				break;
+				break;*/
 			case screen::ingame:
 				if (turn == 0 || turn == -1)
 					get_input(1);
@@ -476,6 +523,28 @@ void OnFont(HDC hdc, WCHAR* input, int size)
 	SolidBrush B(Color(0, 0, 0));
 	Pen P(Color(0, 0, 0));
 	StringFormat SF(StringFormatFlagsDirectionRightToLeft);
+
+	SF.SetAlignment(StringAlignmentNear);
+	SF.SetLineAlignment(StringAlignmentNear);
+	//G.DrawRectangle(&P, R);
+	FontFamily FM(L"서울한강체 M");
+	if (!FM.IsAvailable())
+		G.DrawString(input, -1, &F1, R, &SF, &B);
+	else
+		G.DrawString(input, -1, &F2, R, &SF, &B);
+}
+
+void OnFontA(HDC hdc, WCHAR* input, int size)
+{
+	Graphics G(hdc);
+
+	Font F1(L"맑은 고딕", size, FontStyleRegular, UnitPixel);
+	Font F2(L"서울한강체 M", size, FontStyleRegular, UnitPixel);
+
+	RectF R(260, 185, 400, size);
+	SolidBrush B(Color(0, 0, 0));
+	Pen P(Color(0, 0, 0));
+	StringFormat SF(StringFormatFlagsNoClip);
 
 	SF.SetAlignment(StringAlignmentNear);
 	SF.SetLineAlignment(StringAlignmentNear);
@@ -598,5 +667,8 @@ void get_input(int x)
 		time_limit -= 30;
 
 	if (isCorrect(x, before_score, before_nth) == 0)
+	{
 		screen_mode = screen::gameover;
+		start_anim_time = clock();
+	}
 }

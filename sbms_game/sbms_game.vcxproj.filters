@@ -153,5 +153,35 @@
     <Image Include="..\resource\tutorial\tutorial.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\resource\gameover\gameover_arrow_retry.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_arrow_stop.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_k_0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_k_1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_k_2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_k_background.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_n_0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_n_1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_n_2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\gameover_n_background.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

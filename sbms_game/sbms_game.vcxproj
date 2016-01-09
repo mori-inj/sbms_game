@@ -188,6 +188,16 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\resource\gameover\gameover_arrow_retry.png" />
+    <Image Include="..\resource\gameover\gameover_arrow_stop.png" />
+    <Image Include="..\resource\gameover\gameover_k_0.png" />
+    <Image Include="..\resource\gameover\gameover_k_1.png" />
+    <Image Include="..\resource\gameover\gameover_k_2.png" />
+    <Image Include="..\resource\gameover\gameover_k_background.png" />
+    <Image Include="..\resource\gameover\gameover_n_0.png" />
+    <Image Include="..\resource\gameover\gameover_n_1.png" />
+    <Image Include="..\resource\gameover\gameover_n_2.png" />
+    <Image Include="..\resource\gameover\gameover_n_background.png" />
     <Image Include="..\resource\game\0K.png" />
     <Image Include="..\resource\game\0N.png" />
     <Image Include="..\resource\game\1K.png" />
