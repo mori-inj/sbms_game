@@ -417,6 +417,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			}
 			break;
+
 		case '0':
 			switch (screen_mode)
 			{
@@ -426,7 +427,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			}
 			break;
+		case VK_NUMPAD0:
+			switch (screen_mode)
+			{
+			case screen::ingame:
+				if (turn == 0 || turn == -1)
+					get_input(0);
+				break;
+			}
+			break;
+
 		case '1':
+			switch (screen_mode)
+			{
+			case screen::ingame:
+				if (turn == 0 || turn == -1)
+					get_input(1);
+				break;
+			}
+			break;
+		case VK_NUMPAD1:
 			switch (screen_mode)
 			{
 			case screen::ingame:
