@@ -189,5 +189,17 @@
     <Image Include="..\resource\wrong\wrong_k.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\resource\gameover\win_k.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\gameover\win_n.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\title\info.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\resource\wrong\wrong_n.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

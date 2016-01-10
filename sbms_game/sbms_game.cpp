@@ -14,9 +14,9 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode, choice, turn, player_input, score = 1, nth = 1, before_score, before_nth, is_start = 0, time_limit = 800, retry = 0, wrong_flag = 0;
+int screen_mode, choice, turn, player_input, score = 1, nth = 1, before_score, before_nth, is_start = 0, time_limit = 800, retry, wrong_flag, flag_i,flag_n;
 clock_t start_anim_time;
-enum screen { title, choose, tutorial, start_anim, ingame, gameover };
+enum screen { title, choose, tutorial, start_anim, ingame, gameover, info };
 
 void OnFont(HDC hdc, WCHAR* input, int size);
 void OnFontA(HDC hdc, WCHAR* input, int size);
@@ -343,34 +343,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case screen::gameover:
-			if (choice == 0)
+			if (score < 32)
 			{
-				OnPaint(MemDC, GAMEOVER_K_BG, 0, 0);
-				swprintf_s(score_t, L"%d", score);
-				OnFontA(MemDC, score_t, 72);
-				if (clock() - start_anim_time <= 400)
-					OnPaint(MemDC, GAMEOVER_K_0, 0, 0);
-				else if (clock() - start_anim_time <= 500)
-					OnPaint(MemDC, GAMEOVER_K_1, 0, 0);
+				if (choice == 0)
+				{
+					OnPaint(MemDC, GAMEOVER_K_BG, 0, 0);
+					swprintf_s(score_t, L"%d", score);
+					OnFontA(MemDC, score_t, 72);
+					if (clock() - start_anim_time <= 400)
+						OnPaint(MemDC, GAMEOVER_K_0, 0, 0);
+					else if (clock() - start_anim_time <= 500)
+						OnPaint(MemDC, GAMEOVER_K_1, 0, 0);
+					else
+						OnPaint(MemDC, GAMEOVER_K_2, 0, 0);
+				}
 				else
-					OnPaint(MemDC, GAMEOVER_K_2, 0, 0);
+				{
+					OnPaint(MemDC, GAMEOVER_N_BG, 0, 0);
+					swprintf_s(score_t, L"%d", score);
+					OnFontA(MemDC, score_t, 72);
+					if (clock() - start_anim_time <= 400)
+						OnPaint(MemDC, GAMEOVER_N_0, 0, 0);
+					else if (clock() - start_anim_time <= 500)
+						OnPaint(MemDC, GAMEOVER_N_1, 0, 0);
+					else
+						OnPaint(MemDC, GAMEOVER_N_2, 0, 0);
+				}
 			}
 			else
 			{
-				OnPaint(MemDC, GAMEOVER_N_BG, 0, 0);
-				swprintf_s(score_t, L"%d", score);
-				OnFontA(MemDC, score_t, 72);
-				if (clock() - start_anim_time <= 400)
-					OnPaint(MemDC, GAMEOVER_N_0, 0, 0);
-				else if (clock() - start_anim_time <= 500)
-					OnPaint(MemDC, GAMEOVER_N_1, 0, 0);
+				if (choice == 0)
+				{
+					OnPaint(MemDC, WIN_K, 0, 0);
+					swprintf_s(score_t, L"%d", score);
+					OnFontA(MemDC, score_t, 72);
+				}
 				else
-					OnPaint(MemDC, GAMEOVER_N_2, 0, 0);
+				{
+					OnPaint(MemDC, WIN_N, 0, 0);
+					swprintf_s(score_t, L"%d", score);
+					OnFontA(MemDC, score_t, 72);
+				}
+
 			}
 			if (retry == 0)
 				OnPaint(MemDC, GAMEOVER_ARROW_RETRY, 0, 0);
 			else
 				OnPaint(MemDC, GAMEOVER_ARROW_STOP, 0, 0);
+			break;
+
+		case screen::info:
+			OnPaint(MemDC, INFO, 0, 0);
 			break;
 		}
 
@@ -385,25 +408,72 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
+		case 'I':
+			switch (screen_mode)
+			{
+			case screen::choose:
+				flag_i = 1;
+				break;
+			case screen::info:
+				flag_i = flag_n = 0;
+				screen_mode = choose;
+				break;
+			}
+			break;
+		case 'N':
+			switch (screen_mode)
+			{
+			case screen::choose:
+				if(flag_i)
+					flag_n = 1;
+				break;
+			case screen::info:
+				flag_i = flag_n = 0;
+				screen_mode = choose;
+				break;
+			}
+			break;
+		case 'J':
+			switch (screen_mode)
+			{
+			case screen::choose:
+				if (flag_i&&flag_n)
+					screen_mode = screen::info;
+				break;
+			case screen::info:
+				flag_i = flag_n = 0;
+				screen_mode = choose;
+				break;
+			}
+			break;
 		case VK_UP:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::title:
 				if (choice == 1)
 					choice = 0;
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case VK_DOWN:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::title:
 				if (choice == 0)
 					choice = 1;
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case VK_LEFT:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::choose:
@@ -413,10 +483,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			case screen::gameover:
 				if (retry == 1)
 					retry = 0;
-				break;
+				break; 
+			case screen::info:
+					screen_mode = choose;
+					break;
 			}
 			break;
 		case VK_RIGHT:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::choose:
@@ -427,9 +501,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				if (retry == 0)
 					retry = 1;
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case VK_RETURN:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::title:
@@ -449,9 +527,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				else
 					screen_mode = screen::title;
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case 'Z':
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::title:
@@ -475,9 +557,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				if (turn == 0 || turn == -1)
 					get_input(0);
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case 'X':
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::tutorial:
@@ -496,43 +582,71 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				if (turn == 0 || turn == -1)
 					get_input(1);
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 
 		case '0':
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::ingame:
 				if (turn == 0 || turn == -1)
 					get_input(0);
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case VK_NUMPAD0:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::ingame:
 				if (turn == 0 || turn == -1)
 					get_input(0);
+				break;
+			case screen::info:
+				screen_mode = choose;
 				break;
 			}
 			break;
 
 		case '1':
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::ingame:
 				if (turn == 0 || turn == -1)
 					get_input(1);
 				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case VK_NUMPAD1:
+			flag_i = flag_n = 0;
 			switch (screen_mode)
 			{
 			case screen::ingame:
 				if (turn == 0 || turn == -1)
 					get_input(1);
+				break;
+			case screen::info:
+				screen_mode = choose;
+				break;
+			}
+			break;
+		default:
+			flag_i = flag_n = 0;
+			switch (screen_mode)
+			{
+			case screen::info:
+				screen_mode = choose;
 				break;
 			}
 			break;
