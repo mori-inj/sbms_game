@@ -14,7 +14,7 @@ HINSTANCE g_hInst;
 HWND hWndMain;
 LPCTSTR lpszClass = TEXT("GdiPlusStart");
 
-int screen_mode, choice, turn, player_input, score = 1, nth = 1, before_score, before_nth, is_start = 0, time_limit = 800, retry, wrong_flag, flag_i,flag_n;
+int screen_mode, choice, turn, player_input, score = 1, nth = 1, before_score, before_nth, is_start = 0, time_limit = 800, retry, wrong_flag, flag_i, flag_n;
 clock_t start_anim_time;
 enum screen { title, choose, tutorial, start_anim, ingame, gameover, info };
 
@@ -424,7 +424,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			switch (screen_mode)
 			{
 			case screen::choose:
-				if(flag_i)
+				if (flag_i)
 					flag_n = 1;
 				break;
 			case screen::info:
@@ -483,10 +483,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			case screen::gameover:
 				if (retry == 1)
 					retry = 0;
-				break; 
+				break;
 			case screen::info:
-					screen_mode = choose;
-					break;
+				screen_mode = choose;
+				break;
 			}
 			break;
 		case VK_RIGHT:
@@ -516,6 +516,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				else
 					screen_mode = screen::tutorial;
 				break;
+			case screen::tutorial:
+				choice = 1;
+				screen_mode = screen::title;
+				break;
 			case screen::choose:
 				start_anim_time = clock();
 				screen_mode = screen::start_anim;
@@ -541,6 +545,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 					screen_mode = screen::choose;
 				else
 					screen_mode = screen::tutorial;
+				break;
+			case screen::tutorial:
+				choice = 1;
+				screen_mode = screen::title;
 				break;
 			case screen::choose:
 				start_anim_time = clock();
